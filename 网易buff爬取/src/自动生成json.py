@@ -82,7 +82,7 @@ json_files = [
     # '受限普通久经.json', '受限普通崭新.json', '受限普通略磨.json',
     # '保密暗金久经.json', '保密暗金崭新.json', '保密暗金略磨.json',
     # '受限暗金久经.json', '受限暗金崭新.json', '受限暗金略磨.json'
-    "军规普通崭新.json","军规暗金崭新.json"
+    "军规普通崭新.json","军规暗金崭新1.json"
 ]
 
 base_path = os.path.join(os.path.dirname(__file__), '..', 'dist')

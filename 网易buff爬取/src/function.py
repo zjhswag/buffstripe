@@ -1,5 +1,6 @@
 import json
 import time
+import random
 
 import requests
 
@@ -8,13 +9,13 @@ csgo_url = "https://buff.163.com/market/csgo"
 notification_url = "https://buff.163.com/api/message/notification?"
 # 需要修改的地方,从"https://buff.163.com/market/csgo"获取,cookie去除csrf,保留session_id
 headers_csgo = {
-    "Cookie": "Hm_lvt_f8682ef0d24236cab0e9148c7b64de8a=1709623940; vinfo_n_f_l_n3=801eba530a3c1593.1.1.1709623939065.1709624085379.1709631285413; Device-Id=x6E3DzVuXF8y73bMsSwB; _ntes_nnid=701170eacefadd792754a0a48efaa075,1716454981484; _ntes_nuid=701170eacefadd792754a0a48efaa075; timing_user_id=time_xDEGX9zJ51; _ga=GA1.1.1261352027.1718247638; _clck=1ren23j%7C2%7Cfml%7C0%7C1625; Qs_lvt_382223=1718247643; Qs_pv_382223=1900562704502862000; _ga_C6TGHFPQ1H=GS1.1.1718247637.1.0.1718247671.0.0.0; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=lmn2bE.R3Ms1Skgdmr_x140YwJY5dG6ho1obFxyGWWPHMmy6MT5QSOY3M7Vp0OoctmFTkGuDB2_4C3Qz1DUf9zfmxEDXrsPxYvWk9o5l.aTDQ0DrWfGZAVGRUYTrWfmOol56eZL_WSenemcDTMKf_JCTcOV9tWvP4iOJX5JamS1qgIh4rP_OjrqPf5KK6DUHyX5B_Q9b2TSbKyLqIq.SAusID9u2qPD42jI7oUIBoEVNY; S_INFO=1719385443|0|0&60##|16670494952; P_INFO=16670494952|1719385443|1|netease_buff|00&99|null&null&null#gud&440100#10#0|&0|null|16670494952; remember_me=U1092505075|nqRB9xP9cAq7u1uh3O1mgWoCfWkLMZ8j; session=1-6SvSdtn5rjKaMFRMfkf0FnyAISkfByxMTGhqz-q1UHUC2043728555; steam_verify_result=",
+    "Cookie": "Hm_lvt_f8682ef0d24236cab0e9148c7b64de8a=1709623940; vinfo_n_f_l_n3=801eba530a3c1593.1.1.1709623939065.1709624085379.1709631285413; Device-Id=x6E3DzVuXF8y73bMsSwB; _ntes_nnid=701170eacefadd792754a0a48efaa075,1716454981484; _ntes_nuid=701170eacefadd792754a0a48efaa075; _ga=GA1.1.1261352027.1718247638; _clck=1ren23j%7C2%7Cfml%7C0%7C1625; Qs_lvt_382223=1718247643; Qs_pv_382223=1900562704502862000; _ga_C6TGHFPQ1H=GS1.1.1718247637.1.0.1718247671.0.0.0; Locale-Supported=zh-Hans; game=csgo; steam_verify_result=; AQ_HD=1; YD_SC_SID=EE2D0BDBB0834E60811933566731A7E3; AQ_REQ_FROM=webzj; NTES_YD_SESS=7nWAREFn5nslz5_1MKIUtbKbZF0Z3eH3nAwjeCFuGGhfpvFRpWZ9_iNkpB4tbiw6KveWduUHa5zmnk9PAHXsVPsvC2H03ohCNMGdVwZ7LIWH9bH3Gsu1O4u.XNW3Gsviwxa02ihzw3g3iVeCKCdblVNt4l54Mxifn0JHXg6_z__BMsOB0HhLy.bEHOMGdJNMKMGnyosrNh735bfEFEFhkcVxHVU5ShHm5yxBwXxaw24JN; S_INFO=1722606327|0|0&60##|16670494952; P_INFO=16670494952|1722606327|1|netease_buff|00&99|gud&1722601817&netease_buff#gud&440100#10#0#0|&0|null|16670494952; remember_me=U1092505075|RcXKRq0K5wtkHcC8WDw4VtjXGfLbkft1; session=1-YeAtAfV2hH7Ki5pVuyUlPwcQD-J-UOonDLLZdoWcqBdw2043728555",
     "Referer": "https://buff.163.com/",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 }
 # 需要修改的地方,notification_url = "https://buff.163.com/api/message/notification?"从这获取，cookie去除session和csrf
 headers = {
-    "Cookie": "Hm_lvt_f8682ef0d24236cab0e9148c7b64de8a=1709623940; vinfo_n_f_l_n3=801eba530a3c1593.1.1.1709623939065.1709624085379.1709631285413; Device-Id=x6E3DzVuXF8y73bMsSwB; _ntes_nnid=701170eacefadd792754a0a48efaa075,1716454981484; _ntes_nuid=701170eacefadd792754a0a48efaa075; timing_user_id=time_xDEGX9zJ51; _ga=GA1.1.1261352027.1718247638; _clck=1ren23j%7C2%7Cfml%7C0%7C1625; Qs_lvt_382223=1718247643; Qs_pv_382223=1900562704502862000; _ga_C6TGHFPQ1H=GS1.1.1718247637.1.0.1718247671.0.0.0; Locale-Supported=zh-Hans; game=csgo; NTES_YD_SESS=lmn2bE.R3Ms1Skgdmr_x140YwJY5dG6ho1obFxyGWWPHMmy6MT5QSOY3M7Vp0OoctmFTkGuDB2_4C3Qz1DUf9zfmxEDXrsPxYvWk9o5l.aTDQ0DrWfGZAVGRUYTrWfmOol56eZL_WSenemcDTMKf_JCTcOV9tWvP4iOJX5JamS1qgIh4rP_OjrqPf5KK6DUHyX5B_Q9b2TSbKyLqIq.SAusID9u2qPD42jI7oUIBoEVNY; S_INFO=1719385443|0|0&60##|16670494952; P_INFO=16670494952|1719385443|1|netease_buff|00&99|null&null&null#gud&440100#10#0|&0|null|16670494952; remember_me=U1092505075|nqRB9xP9cAq7u1uh3O1mgWoCfWkLMZ8j; steam_verify_result=",
+    "Cookie":"Hm_lvt_f8682ef0d24236cab0e9148c7b64de8a=1709623940; vinfo_n_f_l_n3=801eba530a3c1593.1.1.1709623939065.1709624085379.1709631285413; Device-Id=x6E3DzVuXF8y73bMsSwB; _ntes_nnid=701170eacefadd792754a0a48efaa075,1716454981484; _ntes_nuid=701170eacefadd792754a0a48efaa075; _ga=GA1.1.1261352027.1718247638; _clck=1ren23j%7C2%7Cfml%7C0%7C1625; Qs_lvt_382223=1718247643; Qs_pv_382223=1900562704502862000; _ga_C6TGHFPQ1H=GS1.1.1718247637.1.0.1718247671.0.0.0; Locale-Supported=zh-Hans; game=csgo; steam_verify_result=; AQ_HD=1; YD_SC_SID=EE2D0BDBB0834E60811933566731A7E3; AQ_REQ_FROM=webzj; NTES_YD_SESS=7nWAREFn5nslz5_1MKIUtbKbZF0Z3eH3nAwjeCFuGGhfpvFRpWZ9_iNkpB4tbiw6KveWduUHa5zmnk9PAHXsVPsvC2H03ohCNMGdVwZ7LIWH9bH3Gsu1O4u.XNW3Gsviwxa02ihzw3g3iVeCKCdblVNt4l54Mxifn0JHXg6_z__BMsOB0HhLy.bEHOMGdJNMKMGnyosrNh735bfEFEFhkcVxHVU5ShHm5yxBwXxaw24JN; S_INFO=1722606327|0|0&60##|16670494952; P_INFO=16670494952|1722606327|1|netease_buff|00&99|gud&1722601817&netease_buff#gud&440100#10#0#0|&0|null|16670494952; remember_me=U1092505075|RcXKRq0K5wtkHcC8WDw4VtjXGfLbkft1",
     "Host": "buff.163.com",
     "Referer": "https://buff.163.com/market/csgo",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -37,7 +38,12 @@ buy_last = 'https://buff.163.com/api/market/goods/buy'
 
 # 市场刷新接口，传入参数为崭新，略磨，皮肤隐秘程度，设置价格等
 first_url = "https://buff.163.com/api/market/goods?"
-
+def send_payment(headers, params):
+    try:
+        response = requests.post(url=buy_last, headers=headers, json=params)
+        return response.json()
+    except requests.RequestException as e:
+        return {"error": str(e)}
 
 def extract_gun_name(full_string):
     # 查找最后一个 '|' 的位置
@@ -48,6 +54,10 @@ def extract_gun_name(full_string):
     result = prefix_part + extracted_part
     return result
 
+def random_sleep(min_sleep, max_sleep):
+    sleep_time = random.uniform(min_sleep, max_sleep)
+    print(sleep_time)
+    time.sleep(sleep_time)
 
 def print_red(text):
     # 文本颜色设置为红色
@@ -146,7 +156,7 @@ def try_again(headers2, request_url, params, max_retries=5, delay=1):
             print(f"JSONDecodeError: {e}")
             print("Response text:", res.text)
         retries += 1
-        print(f"Retrying... ({retries}/{max_retries})")
+        print(f"Retrying2... ({retries}/{max_retries})")
         time.sleep(delay)
         delay *= 2  # 指数退避
     return res,data, newheaders
